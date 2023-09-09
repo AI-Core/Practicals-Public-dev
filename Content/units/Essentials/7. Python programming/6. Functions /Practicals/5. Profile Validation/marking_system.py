@@ -1,4 +1,4 @@
-from typing import Callable, Optional
+from typing import Callable, Optional, Union
 
 class ProfileError(Exception):
     def __init__(self, message=None):
@@ -21,26 +21,24 @@ def check_step_1(
         "\033[92m\N{heavy check mark} Well done! "
         "You have defined the validate_profile function correctly"
     )
-def check_step_2(
-    validate_profile: Callable[[str, str, str], Optional[str]]
-) -> None:
+
+def check_step_2(validate_profile: Callable[[str, int, str], Optional[Union[str, bool]]]) -> None:
     try:
         name = "John"
         age = 20
         email = "john@hotmail.com"
+        expected_1 = True
         output_1 = validate_profile(name, age, email)
 
-        if output_1 is not None:
+        if output_1 != expected_1:
             raise ProfileError(
                 "The marking system tried to run your function "
                 f"using the arguments {name}, {age}, and {email}, "
-                "so it shouldn't return anything, but it returned "
+                f"so it should return {expected_1}, but it returned "
                 f"{output_1}. Please, try again."
             )
 
         name = "John!"
-        age = 20
-        email = "john@hotmail.com"
         expected_2 = "Invalid name"
         output_2 = validate_profile(name, age, email)
 
@@ -51,9 +49,6 @@ def check_step_2(
                 f"so it should return {expected_2}, but it returned "
                 f"{output_2}. Please, try again."
             )
-
-    except ProfileError as e:
-        raise ProfileError(e)
 
     except Exception as e:
         raise Exception(
@@ -66,7 +61,6 @@ def check_step_2(
             "\033[92m\N{heavy check mark} Well done! "
             "Your function now checks if the name is valid"
         )
-
 
 def check_step_3(
     validate_profile: Callable[[str, str, str], Optional[str]]
